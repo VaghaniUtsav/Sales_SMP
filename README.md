@@ -72,3 +72,36 @@ RETURN
             MONTH
         )
     )
+
+Previous Three Months Clicks =
+VAR MaxSelectedDate = MAX ( 'DateTable'[Date] )
+VAR EndOfCurrentThreeMonthPeriod = MaxSelectedDate
+VAR StartOfCurrentThreeMonthPeriod = EDATE(MaxSelectedDate, -3) // This is actually the start of the -2 month from max date, DATESINPERIOD includes current
+                                                              // Let's adjust logic to be more precise for previous period
+
+// First, define the END of the "current" 3-month period (which is MaxSelectedDate)
+// Then define the START of the "current" 3-month period.
+// The "previous" 3-month period ends the day before the "current" 3-month period starts.
+
+VAR EndDateOfSelectedPeriod = MAX('DateTable'[Date])
+// DATESINPERIOD includes the MaxSelectedDate, so its start is roughly MaxSelectedDate - 3 months + 1 day.
+// To get the period *before* this:
+VAR StartOfSelectedThreeMonthsApprox = EDATE(EndDateOfSelectedPeriod, -3) // This will be start of the month 2 months ago if Max is end of month
+                                                                     // More accurately:
+VAR EndOfPreviousThreeMonths = DATEADD(STARTOFMONTH(EDATE(EndDateOfSelectedPeriod, -2)), -1, DAY)
+// This is complex. Let's use DATEADD on the DATESINPERIOD result.
+
+RETURN
+    CALCULATE (
+        [Total Clicks],
+        DATEADD(
+            DATESINPERIOD (
+                'DateTable'[Date],
+                MaxSelectedDate,
+                -3,
+                MONTH
+            ),
+            -3,
+            MONTH
+        )
+    )
