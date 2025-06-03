@@ -118,3 +118,15 @@ RETURN
             'DateTable'[Year] = TargetYear
         )
     )
+
+Previous Year Clicks =
+VAR MaxSelectedDate = MAX ( 'DateTable'[Date] )
+VAR TargetPreviousYear = YEAR ( MaxSelectedDate ) - 1
+RETURN
+    CALCULATE (
+        [Total Clicks],
+        FILTER (
+            ALL ( 'DateTable' ),
+            'DateTable'[Year] = TargetPreviousYear
+        )
+    )
