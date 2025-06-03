@@ -105,3 +105,4 @@ RETURN
             MONTH
         )
     )
+The first argument to 'STARTOFMONTH' must specify a column.
