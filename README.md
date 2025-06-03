@@ -27,3 +27,32 @@ RETURN
             'DateTable'[Year] = PreviousWeekYear
         )
     )
+
+Selected Month Clicks =
+VAR MaxSelectedDate = MAX ( 'DateTable'[Date] )
+VAR StartOfMonthOfMaxDate = STARTOFMONTH ( 'DateTable'[Date] ) // Context of MaxSelectedDate
+VAR EndOfMonthOfMaxDate = ENDOFMONTH ( 'DateTable'[Date] )   // Context of MaxSelectedDate
+RETURN
+    CALCULATE (
+        [Total Clicks],
+        DATESBETWEEN(
+            'DateTable'[Date],
+            MINX( FILTER( ALLSELECTED('DateTable'), 'DateTable'[Date] <= MaxSelectedDate ), StartOfMonthOfMaxDate ),
+            MAXX( FILTER( ALLSELECTED('DateTable'), 'DateTable'[Date] <= MaxSelectedDate ), EndOfMonthOfMaxDate )
+        )
+    )
+
+
+Selected Month Clicks (Simpler) =
+VAR MaxSelectedDate = MAX ( 'DateTable'[Date] )
+VAR TargetYear = YEAR ( MaxSelectedDate )
+VAR TargetMonth = MONTH ( MaxSelectedDate )
+RETURN
+    CALCULATE (
+        [Total Clicks],
+        FILTER (
+            ALL ( 'DateTable' ), // Use ALL to apply new month/year filter
+            'DateTable'[Year] = TargetYear &&
+            'DateTable'[MonthNumber] = TargetMonth
+        )
+    )
