@@ -105,4 +105,16 @@ RETURN
             MONTH
         )
     )
-The first argument to 'STARTOFMONTH' must specify a column.
+
+
+Selected Year Clicks =
+VAR MaxSelectedDate = MAX ( 'DateTable'[Date] )
+VAR TargetYear = YEAR ( MaxSelectedDate )
+RETURN
+    CALCULATE (
+        [Total Clicks],
+        FILTER (
+            ALL ( 'DateTable' ),
+            'DateTable'[Year] = TargetYear
+        )
+    )
