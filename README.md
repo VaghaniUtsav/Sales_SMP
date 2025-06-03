@@ -65,3 +65,19 @@ CALCULATE(
     [Total Clicks],
     PREVIOUSMONTH( StartOfSelectedMonthInContext ) // Needs a date column from the date table
 )
+
+
+Previous Month Clicks (Dynamic) =
+VAR MaxSelectedDate = MAX ( 'DateTable'[Date] )
+VAR FirstDayOfSelectedMonth = STARTOFMONTH( MaxSelectedDate )
+VAR FirstDayOfPreviousMonth = EDATE( FirstDayOfSelectedMonth, -1 )
+VAR LastDayOfPreviousMonth = ENDOFMONTH( FirstDayOfPreviousMonth )
+RETURN
+    CALCULATE (
+        [Total Clicks],
+        DATESBETWEEN(
+            'DateTable'[Date],
+            FirstDayOfPreviousMonth,
+            LastDayOfPreviousMonth
+        )
+    )
