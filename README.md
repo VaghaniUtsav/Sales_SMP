@@ -69,15 +69,15 @@ CALCULATE(
 
 Previous Month Clicks (Dynamic) =
 VAR MaxSelectedDate = MAX ( 'DateTable'[Date] )
-VAR FirstDayOfSelectedMonth = STARTOFMONTH( MaxSelectedDate )
-VAR FirstDayOfPreviousMonth = EDATE( FirstDayOfSelectedMonth, -1 )
-VAR LastDayOfPreviousMonth = ENDOFMONTH( FirstDayOfPreviousMonth )
+VAR DateInPreviousMonth = EDATE ( MaxSelectedDate, -1 )
+VAR TargetYear = YEAR ( DateInPreviousMonth )
+VAR TargetMonth = MONTH ( DateInPreviousMonth )
 RETURN
     CALCULATE (
         [Total Clicks],
-        DATESBETWEEN(
-            'DateTable'[Date],
-            FirstDayOfPreviousMonth,
-            LastDayOfPreviousMonth
+        FILTER (
+            ALL ( 'DateTable' ),
+            'DateTable'[Year] = TargetYear &&
+            'DateTable'[MonthNumber] = TargetMonth
         )
     )
