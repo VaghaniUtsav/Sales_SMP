@@ -56,3 +56,12 @@ RETURN
             'DateTable'[MonthNumber] = TargetMonth
         )
     )
+
+Previous Month Clicks (Alt) =
+VAR MaxSelectedDate = MAX ( 'DateTable'[Date] )
+VAR StartOfSelectedMonthInContext = STARTOFMONTH('DateTable'[Date]) // This gets the start of month for MaxSelectedDate
+RETURN
+CALCULATE(
+    [Total Clicks],
+    PREVIOUSMONTH( StartOfSelectedMonthInContext ) // Needs a date column from the date table
+)
