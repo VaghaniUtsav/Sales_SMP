@@ -58,3 +58,17 @@ RETURN
             'DateTable'[MonthNumber] = TargetMonth
         )
     )
+
+
+Selected Three Months Clicks =
+VAR MaxSelectedDate = MAX ( 'DateTable'[Date] )
+RETURN
+    CALCULATE (
+        [Total Clicks],
+        DATESINPERIOD (
+            'DateTable'[Date],
+            MaxSelectedDate,
+            -3,
+            MONTH
+        )
+    )
