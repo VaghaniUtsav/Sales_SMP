@@ -28,22 +28,8 @@ RETURN
         )
     )
 
-Selected Month Clicks =
-VAR MaxSelectedDate = MAX ( 'DateTable'[Date] )
-VAR StartOfMonthOfMaxDate = STARTOFMONTH ( 'DateTable'[Date] ) // Context of MaxSelectedDate
-VAR EndOfMonthOfMaxDate = ENDOFMONTH ( 'DateTable'[Date] )   // Context of MaxSelectedDate
-RETURN
-    CALCULATE (
-        [Total Clicks],
-        DATESBETWEEN(
-            'DateTable'[Date],
-            MINX( FILTER( ALLSELECTED('DateTable'), 'DateTable'[Date] <= MaxSelectedDate ), StartOfMonthOfMaxDate ),
-            MAXX( FILTER( ALLSELECTED('DateTable'), 'DateTable'[Date] <= MaxSelectedDate ), EndOfMonthOfMaxDate )
-        )
-    )
 
-
-Selected Month Clicks (Simpler) =
+Selected Month Clicks (Dynamic) =
 VAR MaxSelectedDate = MAX ( 'DateTable'[Date] )
 VAR TargetYear = YEAR ( MaxSelectedDate )
 VAR TargetMonth = MONTH ( MaxSelectedDate )
@@ -56,15 +42,6 @@ RETURN
             'DateTable'[MonthNumber] = TargetMonth
         )
     )
-
-Previous Month Clicks (Alt) =
-VAR MaxSelectedDate = MAX ( 'DateTable'[Date] )
-VAR StartOfSelectedMonthInContext = STARTOFMONTH('DateTable'[Date]) // This gets the start of month for MaxSelectedDate
-RETURN
-CALCULATE(
-    [Total Clicks],
-    PREVIOUSMONTH( StartOfSelectedMonthInContext ) // Needs a date column from the date table
-)
 
 
 Previous Month Clicks (Dynamic) =
