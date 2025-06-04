@@ -174,3 +174,12 @@ RETURN
             EndDateOfPreviousThreeMonths
         )
     )
+
+
+Selected Day Clicks =
+VAR MaxSelectedDate = MAX ( 'DateTable'[Date] ) // Gets the latest date from your slicer
+RETURN
+    CALCULATE (
+        [Total Clicks],
+        'DateTable'[Date] = MaxSelectedDate // Filter Total Clicks to where the date in DateTable matches MaxSelectedDate
+    )
