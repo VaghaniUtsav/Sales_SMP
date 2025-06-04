@@ -150,3 +150,27 @@ RETURN
             MONTH                  // The interval type for the shift
         )
     )
+
+
+Previous Three Months Clicks (Explicit) =
+VAR MaxSelectedDate = MAX ( 'DateTable'[Date] )
+
+// Determine the 3-full-month period that MaxSelectedDate's month is the end of.
+VAR EndOfSelectedMonthsWindow = ENDOFMONTH(MaxSelectedDate)
+VAR StartOfSelectedMonthsWindow = STARTOFMONTH(EDATE(MaxSelectedDate, -2))
+
+// The previous 3-full-month period ends the day before the "Selected Months Window" starts.
+VAR EndDateOfPreviousThreeMonths = DATEADD(StartOfSelectedMonthsWindow, -1, DAY)
+
+// The start of the previous 3-full-month period is 2 full months prior to the month of EndDateOfPreviousThreeMonths.
+VAR StartDateOfPreviousThreeMonths = STARTOFMONTH(EDATE(EndDateOfPreviousThreeMonths, -2))
+
+RETURN
+    CALCULATE (
+        [Total Clicks],
+        DATESBETWEEN (
+            'DateTable'[Date],
+            StartDateOfPreviousThreeMonths,
+            EndDateOfPreviousThreeMonths
+        )
+    )
