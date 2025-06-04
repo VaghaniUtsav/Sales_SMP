@@ -133,3 +133,20 @@ RETURN
 
 
 The first argument to 'STARTOFMONTH' must specify a column.
+
+Previous Three Months Clicks (Recommended) =
+VAR MaxSelectedDate = MAX ( 'DateTable'[Date] )
+RETURN
+    CALCULATE (
+        [Total Clicks],
+        DATEADD(
+            DATESINPERIOD (
+                'DateTable'[Date], // The date column from your Date Table
+                MaxSelectedDate,   // The anchor date (latest date from slicer)
+                -3,                // The number of intervals to go back
+                MONTH              // The interval type
+            ),
+            -3,                    // Shift this resulting period back by 3
+            MONTH                  // The interval type for the shift
+        )
+    )
