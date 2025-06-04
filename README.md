@@ -183,3 +183,12 @@ RETURN
         [Total Clicks],
         'DateTable'[Date] = MaxSelectedDate // Filter Total Clicks to where the date in DateTable matches MaxSelectedDate
     )
+
+Previous Day Clicks =
+VAR MaxSelectedDate = MAX ( 'DateTable'[Date] )      // Gets the latest date from your slicer
+VAR PreviousDate = MaxSelectedDate - 1             // Calculates the date for the day before
+RETURN
+    CALCULATE (
+        [Total Clicks],
+        'DateTable'[Date] = PreviousDate // Filter Total Clicks to the calculated previous date
+    )
