@@ -130,3 +130,6 @@ RETURN
             'DateTable'[Year] = TargetPreviousYear
         )
     )
+
+
+The first argument to 'STARTOFMONTH' must specify a column.
