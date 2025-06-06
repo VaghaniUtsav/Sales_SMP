@@ -201,3 +201,12 @@ VAR StartOfWeek = AnchorDate - WEEKDAY ( AnchorDate, 2 ) + 1
 VAR EndOfWeek = StartOfWeek + 6
 RETURN
     FORMAT ( StartOfWeek, "d mmm yyyy" ) & " - " & FORMAT ( EndOfWeek, "d mmm yyyy" )
+
+Previous Week Range Label =
+VAR AnchorDate = MAX ( 'DateTable'[Date] )
+// Anchor in the previous week
+VAR AnchorInPreviousWeek = AnchorDate - 7
+VAR StartOfPreviousWeek = AnchorInPreviousWeek - WEEKDAY ( AnchorInPreviousWeek, 2 ) + 1
+VAR EndOfPreviousWeek = StartOfPreviousWeek + 6
+RETURN
+    FORMAT ( StartOfPreviousWeek, "d mmm yyyy" ) & " - " & FORMAT ( EndOfPreviousWeek, "d mmm yyyy" )
