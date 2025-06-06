@@ -210,3 +210,14 @@ VAR StartOfPreviousWeek = AnchorInPreviousWeek - WEEKDAY ( AnchorInPreviousWeek,
 VAR EndOfPreviousWeek = StartOfPreviousWeek + 6
 RETURN
     FORMAT ( StartOfPreviousWeek, "d mmm yyyy" ) & " - " & FORMAT ( EndOfPreviousWeek, "d mmm yyyy" )
+
+Selected Day Label =
+VAR SelectedDate = MAX ( 'DateTable'[Date] )
+RETURN
+    FORMAT ( SelectedDate, "d mmm yyyy" )
+
+Previous Day Label =
+VAR SelectedDate = MAX ( 'DateTable'[Date] )
+VAR PreviousDate = SelectedDate - 1
+RETURN
+    FORMAT ( PreviousDate, "d mmm yyyy" )
