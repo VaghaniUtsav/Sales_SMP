@@ -271,3 +271,16 @@ RETURN
     FORMAT ( PreviousPeriodStartDate, "d mmm yyyy" ) & " - " & FORMAT ( PreviousPeriodEndDate, "d mmm yyyy" )
 
 The first argument to 'STARTOFMONTH' must specify a column.
+
+Selected 3 Calendar Months Label =
+VAR AnchorDate = MAX ( 'Date Table'[Date] )
+// Correctly get the start date of the 3-month window
+VAR DateInStartMonth = EDATE ( AnchorDate, -2 )
+VAR StartDate = DATE ( YEAR ( DateInStartMonth ), MONTH ( DateInStartMonth ), 1 )
+// Correctly get the end date of the 3-month window
+VAR EndDate = EOMONTH ( AnchorDate, 0 )
+RETURN
+FORMAT ( StartDate, "d mmm yyyy" ) & " - " & FORMAT ( TODAY()-1, "dd mmm yyyy" )
+
+
+this the DAX formula i have to show the date but i want to show date like if i select date from date slicer of current on going moths it shows me todays date but if selected date from past month it will shows me date according to that months last date please modify above DAX according to that
