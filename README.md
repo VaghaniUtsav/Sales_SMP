@@ -251,10 +251,12 @@ RETURN
     FORMAT ( StartOfMonth, "d mmm testTakePhoto" ) & " - " & FORMAT ( EndOfMonth, "d mmm testTakePhoto" )
 
 
-Selected Three Months Range Label =
-VAR EndDate = MAX ( 'DateTable'[Date] )
-// EDATE goes back exactly 3 months, then add 1 day to get the start of the period
-VAR StartDate = EDATE ( EndDate, -3 ) + 1
+Selected 3 Calendar Months Label =
+VAR AnchorDate = MAX ( 'DateTable'[Date] )
+// The period starts on the first day of the month, two months prior to the selected date's month.
+VAR StartDate = STARTOFMONTH ( EDATE ( AnchorDate, -2 ) )
+// The period ends on the last day of the month of the selected date.
+VAR EndDate = ENDOFMONTH ( AnchorDate )
 RETURN
     FORMAT ( StartDate, "d mmm yyyy" ) & " - " & FORMAT ( EndDate, "d mmm yyyy" )
 
