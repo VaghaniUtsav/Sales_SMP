@@ -268,3 +268,5 @@ VAR PreviousPeriodEndDate = EDATE ( CurrentPeriodEndDate, -3 )
 VAR PreviousPeriodStartDate = EDATE ( PreviousPeriodEndDate, -3 ) + 1
 RETURN
     FORMAT ( PreviousPeriodStartDate, "d mmm yyyy" ) & " - " & FORMAT ( PreviousPeriodEndDate, "d mmm yyyy" )
+
+The first argument to 'STARTOFMONTH' must specify a column.
