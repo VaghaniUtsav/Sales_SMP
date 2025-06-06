@@ -236,3 +236,6 @@ VAR EndOfPreviousMonth = ENDOFMONTH ( EDATE ( AnchorDate, -1 ) )
 VAR StartOfPreviousMonth = STARTOFMONTH ( EndOfPreviousMonth )
 RETURN
     FORMAT ( StartOfPreviousMonth, "d mmm yyyy" ) & " - " & FORMAT ( EndOfPreviousMonth, "d mmm yyyy" )
+
+The first argument to 'ENDOFMONTH' must specify a column.
+The syntax for 'StartOfMonth' is incorrect. (DAX(VAR AnchorDate = MAX ( 'Date Table'[Date] )VAR StartOfMonth = STARTOFMONTH ( AnchorDate )VAR EndOfMonth = ENDOFMONTH ( AnchorDate )RETURN FORMAT ( StartOfMonth, "d mmm yyyy" ) & " - " & FORMAT ( EndOfMonth, "d mmm yyyy" ))).
