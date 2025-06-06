@@ -320,6 +320,21 @@ RETURN
 FORMAT ( StartDate, "d mmm yyyy" ) & " - " & FORMAT ( EndDate, "dd mmm yyyy" )
 
 
+Current 1 Calendar Month Label =
+VAR AnchorDate = MAX ( 'Date Table'[Date] )
+// Get the start date of the selected month (1st day)
+VAR StartDate = DATE ( YEAR ( AnchorDate ), MONTH ( AnchorDate ), 1 )
+// Determine if the selected month is the current month
+VAR CurrentMonth = MONTH ( TODAY() )
+VAR CurrentYear = YEAR ( TODAY() )
+VAR AnchorMonth = MONTH ( AnchorDate )
+VAR AnchorYear = YEAR ( AnchorDate )
+VAR IsCurrentMonth = ( AnchorMonth = CurrentMonth && AnchorYear = CurrentYear )
+// Use today's date if selected month is current month, otherwise use end of selected month
+VAR EndDate = IF ( IsCurrentMonth, TODAY() - 1, EOMONTH ( AnchorDate, 0 ) )
+RETURN
+FORMAT ( StartDate, "d mmm yyyy" ) & " - " & FORMAT ( EndDate, "dd mmm yyyy" )
+
 Previous 1 Calendar Month Label =
 VAR AnchorDate = MAX ( 'Date Table'[Date] )
 // Get the previous month date
