@@ -221,3 +221,18 @@ VAR SelectedDate = MAX ( 'DateTable'[Date] )
 VAR PreviousDate = SelectedDate - 1
 RETURN
     FORMAT ( PreviousDate, "d mmm yyyy" )
+
+Selected Month Range Label =
+VAR AnchorDate = MAX ( 'DateTable'[Date] )
+VAR StartOfMonth = STARTOFMONTH ( AnchorDate )
+VAR EndOfMonth = ENDOFMONTH ( AnchorDate )
+RETURN
+    FORMAT ( StartOfMonth, "d mmm yyyy" ) & " - " & FORMAT ( EndOfMonth, "d mmm yyyy" )
+
+Previous Month Range Label =
+VAR AnchorDate = MAX ( 'DateTable'[Date] )
+// Get the end of the previous month by going back one month from the anchor date
+VAR EndOfPreviousMonth = ENDOFMONTH ( EDATE ( AnchorDate, -1 ) )
+VAR StartOfPreviousMonth = STARTOFMONTH ( EndOfPreviousMonth )
+RETURN
+    FORMAT ( StartOfPreviousMonth, "d mmm yyyy" ) & " - " & FORMAT ( EndOfPreviousMonth, "d mmm yyyy" )
