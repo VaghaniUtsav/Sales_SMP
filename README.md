@@ -239,3 +239,13 @@ RETURN
 
 The first argument to 'ENDOFMONTH' must specify a column.
 The syntax for 'StartOfMonth' is incorrect. (DAX(VAR AnchorDate = MAX ( 'Date Table'[Date] )VAR StartOfMonth = STARTOFMONTH ( AnchorDate )VAR EndOfMonth = ENDOFMONTH ( AnchorDate )RETURN FORMAT ( StartOfMonth, "d mmm yyyy" ) & " - " & FORMAT ( EndOfMonth, "d mmm yyyy" ))).
+
+
+Selected Month Range Label =
+VAR AnchorDate = MAX ( 'DateTable'[Date] )
+// Correct way to get the start of the month from a single date variable
+VAR StartOfMonth = DATE ( YEAR ( AnchorDate ), MONTH ( AnchorDate ), 1 )
+// EOMONTH is designed to work with a start date and returns the end of the month
+VAR EndOfMonth = EOMONTH ( AnchorDate, 0 )
+RETURN
+    FORMAT ( StartOfMonth, "d mmm testTakePhoto" ) & " - " & FORMAT ( EndOfMonth, "d mmm testTakePhoto" )
