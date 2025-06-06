@@ -351,3 +351,18 @@ VAR IsPrevCurrentMonth = ( PrevMonth = CurrentMonth && PrevYear = CurrentYear )
 VAR EndDate = IF ( IsPrevCurrentMonth, TODAY() - 1, EOMONTH ( PreviousMonthDate, 0 ) )
 RETURN
 FORMAT ( StartDate, "d mmm yyyy" ) & " - " & FORMAT ( EndDate, "dd mmm yyyy" )
+
+
+// ============= CURRENT WEEK =============
+Current Week Label =
+VAR AnchorDate = MAX ( 'Date Table'[Date] )
+// Get the start of the week (assuming Monday as week start)
+VAR StartOfWeek = AnchorDate - WEEKDAY ( AnchorDate, 2 ) + 1
+// Get current week start and end
+VAR CurrentWeekStart = TODAY() - WEEKDAY ( TODAY(), 2 ) + 1
+VAR CurrentWeekEnd = CurrentWeekStart + 6
+VAR IsCurrentWeek = ( StartOfWeek = CurrentWeekStart )
+// Use today's date if selected week is current week, otherwise use end of selected week
+VAR EndDate = IF ( IsCurrentWeek, TODAY() - 1, StartOfWeek + 6 )
+RETURN
+FORMAT ( StartOfWeek, "d mmm yyyy" ) & " - " & FORMAT ( EndDate, "dd mmm yyyy" )
