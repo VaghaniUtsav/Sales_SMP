@@ -318,3 +318,21 @@ VAR IsPrevEndCurrentMonth = ( PrevEndMonth = CurrentMonth && PrevEndYear = Curre
 VAR EndDate = IF ( IsPrevEndCurrentMonth, TODAY() - 1, EOMONTH ( PreviousPeriodEndMonth, 0 ) )
 RETURN
 FORMAT ( StartDate, "d mmm yyyy" ) & " - " & FORMAT ( EndDate, "dd mmm yyyy" )
+
+
+Previous 1 Calendar Month Label =
+VAR AnchorDate = MAX ( 'Date Table'[Date] )
+// Get the previous month date
+VAR PreviousMonthDate = EDATE ( AnchorDate, -1 )
+// Get the start date of the previous month (1st day)
+VAR StartDate = DATE ( YEAR ( PreviousMonthDate ), MONTH ( PreviousMonthDate ), 1 )
+// Determine if the previous month is the current month
+VAR CurrentMonth = MONTH ( TODAY() )
+VAR CurrentYear = YEAR ( TODAY() )
+VAR PrevMonth = MONTH ( PreviousMonthDate )
+VAR PrevYear = YEAR ( PreviousMonthDate )
+VAR IsPrevCurrentMonth = ( PrevMonth = CurrentMonth && PrevYear = CurrentYear )
+// Use today's date if previous month is current month, otherwise use end of previous month
+VAR EndDate = IF ( IsPrevCurrentMonth, TODAY() - 1, EOMONTH ( PreviousMonthDate, 0 ) )
+RETURN
+FORMAT ( StartDate, "d mmm yyyy" ) & " - " & FORMAT ( EndDate, "dd mmm yyyy" )
