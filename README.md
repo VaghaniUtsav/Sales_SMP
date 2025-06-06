@@ -300,3 +300,21 @@ VAR IsCurrentMonth = ( AnchorMonth = CurrentMonth && AnchorYear = CurrentYear )
 VAR EndDate = IF ( IsCurrentMonth, TODAY() - 1, EOMONTH ( AnchorDate, 0 ) )
 RETURN
 FORMAT ( StartDate, "d mmm yyyy" ) & " - " & FORMAT ( EndDate, "dd mmm yyyy" )
+
+Previous 3 Calendar Months Label =
+VAR AnchorDate = MAX ( 'Date Table'[Date] )
+// Get the start date of the previous 3-month window (3 months before the selected period)
+VAR DateInStartMonth = EDATE ( AnchorDate, -5 ) // Go back 5 months to get 3 months before current selection
+VAR StartDate = DATE ( YEAR ( DateInStartMonth ), MONTH ( DateInStartMonth ), 1 )
+// Calculate the end date for previous 3 months period
+VAR PreviousPeriodEndMonth = EDATE ( AnchorDate, -3 ) // 3 months before anchor date
+// Determine if the previous period's end month is the current month
+VAR CurrentMonth = MONTH ( TODAY() )
+VAR CurrentYear = YEAR ( TODAY() )
+VAR PrevEndMonth = MONTH ( PreviousPeriodEndMonth )
+VAR PrevEndYear = YEAR ( PreviousPeriodEndMonth )
+VAR IsPrevEndCurrentMonth = ( PrevEndMonth = CurrentMonth && PrevEndYear = CurrentYear )
+// Use today's date if previous period ends in current month, otherwise use end of that month
+VAR EndDate = IF ( IsPrevEndCurrentMonth, TODAY() - 1, EOMONTH ( PreviousPeriodEndMonth, 0 ) )
+RETURN
+FORMAT ( StartDate, "d mmm yyyy" ) & " - " & FORMAT ( EndDate, "dd mmm yyyy" )
