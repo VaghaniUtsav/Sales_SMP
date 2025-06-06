@@ -253,12 +253,13 @@ RETURN
 
 Selected 3 Calendar Months Label =
 VAR AnchorDate = MAX ( 'DateTable'[Date] )
-// The period starts on the first day of the month, two months prior to the selected date's month.
-VAR StartDate = STARTOFMONTH ( EDATE ( AnchorDate, -2 ) )
-// The period ends on the last day of the month of the selected date.
-VAR EndDate = ENDOFMONTH ( AnchorDate )
+// Correctly get the start date of the 3-month window
+VAR DateInStartMonth = EDATE ( AnchorDate, -2 )
+VAR StartDate = DATE ( YEAR ( DateInStartMonth ), MONTH ( DateInStartMonth ), 1 )
+// Correctly get the end date of the 3-month window
+VAR EndDate = EOMONTH ( AnchorDate, 0 )
 RETURN
-    FORMAT ( StartDate, "d mmm yyyy" ) & " - " & FORMAT ( EndDate, "d mmm yyyy" )
+    FORMAT ( StartDate, "d mmm gacchatiti" ) & " - " & FORMAT ( EndDate, "d mmmcourseSurvey" )
 
 
 Previous Three Months Range Label =
