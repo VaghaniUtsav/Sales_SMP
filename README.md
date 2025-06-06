@@ -366,3 +366,66 @@ VAR IsCurrentWeek = ( StartOfWeek = CurrentWeekStart )
 VAR EndDate = IF ( IsCurrentWeek, TODAY() - 1, StartOfWeek + 6 )
 RETURN
 FORMAT ( StartOfWeek, "d mmm yyyy" ) & " - " & FORMAT ( EndDate, "dd mmm yyyy" )
+
+// ============= PREVIOUS WEEK =============
+Previous Week Label =
+VAR AnchorDate = MAX ( 'Date Table'[Date] )
+// Get the start of the selected week
+VAR StartOfSelectedWeek = AnchorDate - WEEKDAY ( AnchorDate, 2 ) + 1
+// Get the previous week (7 days before)
+VAR StartOfPreviousWeek = StartOfSelectedWeek - 7
+// Get current week start for comparison
+VAR CurrentWeekStart = TODAY() - WEEKDAY ( TODAY(), 2 ) + 1
+VAR IsPreviousWeekCurrent = ( StartOfPreviousWeek = CurrentWeekStart )
+// Use today's date if previous week is current week, otherwise use end of previous week
+VAR EndDate = IF ( IsPreviousWeekCurrent, TODAY() - 1, StartOfPreviousWeek + 6 )
+RETURN
+FORMAT ( StartOfPreviousWeek, "d mmm yyyy" ) & " - " & FORMAT ( EndDate, "dd mmm yyyy" )
+
+// ============= CURRENT DAY =============
+Current Day Label =
+VAR AnchorDate = MAX ( 'Date Table'[Date] )
+VAR IsToday = ( AnchorDate = TODAY() )
+// Use today's date if selected date is today, otherwise use the selected date
+VAR DisplayDate = IF ( IsToday, TODAY() - 1, AnchorDate )
+RETURN
+FORMAT ( DisplayDate, "dd mmm yyyy" )
+
+// ============= PREVIOUS DAY =============
+Previous Day Label =
+VAR AnchorDate = MAX ( 'Date Table'[Date] )
+VAR PreviousDay = AnchorDate - 1
+VAR IsYesterday = ( PreviousDay = TODAY() - 1 )
+// Use today's date if previous day is today, otherwise use the previous day
+VAR DisplayDate = IF ( IsYesterday, TODAY() - 1, PreviousDay )
+RETURN
+FORMAT ( DisplayDate, "dd mmm yyyy" )
+
+// ============= CURRENT YEAR =============
+Current Year Label =
+VAR AnchorDate = MAX ( 'Date Table'[Date] )
+// Get the start date of the selected year (1st January)
+VAR StartDate = DATE ( YEAR ( AnchorDate ), 1, 1 )
+// Determine if the selected year is the current year
+VAR CurrentYear = YEAR ( TODAY() )
+VAR AnchorYear = YEAR ( AnchorDate )
+VAR IsCurrentYear = ( AnchorYear = CurrentYear )
+// Use today's date if selected year is current year, otherwise use end of selected year
+VAR EndDate = IF ( IsCurrentYear, TODAY() - 1, DATE ( AnchorYear, 12, 31 ) )
+RETURN
+FORMAT ( StartDate, "d mmm yyyy" ) & " - " & FORMAT ( EndDate, "dd mmm yyyy" )
+
+// ============= PREVIOUS YEAR =============
+Previous Year Label =
+VAR AnchorDate = MAX ( 'Date Table'[Date] )
+// Get the previous year
+VAR PreviousYear = YEAR ( AnchorDate ) - 1
+// Get the start date of the previous year (1st January)
+VAR StartDate = DATE ( PreviousYear, 1, 1 )
+// Determine if the previous year is the current year
+VAR CurrentYear = YEAR ( TODAY() )
+VAR IsPreviousYearCurrent = ( PreviousYear = CurrentYear )
+// Use today's date if previous year is current year, otherwise use end of previous year
+VAR EndDate = IF ( IsPreviousYearCurrent, TODAY() - 1, DATE ( PreviousYear, 12, 31 ) )
+RETURN
+FORMAT ( StartDate, "d mmm yyyy" ) & " - " & FORMAT ( EndDate, "dd mmm yyyy" )
