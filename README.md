@@ -284,3 +284,19 @@ FORMAT ( StartDate, "d mmm yyyy" ) & " - " & FORMAT ( TODAY()-1, "dd mmm yyyy" )
 
 
 this the DAX formula i have to show the date but i want to show date like if i select date from date slicer of current on going moths it shows me todays date but if selected date from past month it will shows me date according to that months last date please modify above DAX according to that
+
+Selected 3 Calendar Months Label =
+VAR AnchorDate = MAX ( 'Date Table'[Date] )
+// Correctly get the start date of the 3-month window
+VAR DateInStartMonth = EDATE ( AnchorDate, -2 )
+VAR StartDate = DATE ( YEAR ( DateInStartMonth ), MONTH ( DateInStartMonth ), 1 )
+// Determine the appropriate end date based on whether we're in current month or past month
+VAR CurrentMonth = MONTH ( TODAY() )
+VAR CurrentYear = YEAR ( TODAY() )
+VAR AnchorMonth = MONTH ( AnchorDate )
+VAR AnchorYear = YEAR ( AnchorDate )
+VAR IsCurrentMonth = ( AnchorMonth = CurrentMonth && AnchorYear = CurrentYear )
+// Use today's date if current month, otherwise use the last date of the anchor month
+VAR EndDate = IF ( IsCurrentMonth, TODAY() - 1, EOMONTH ( AnchorDate, 0 ) )
+RETURN
+FORMAT ( StartDate, "d mmm yyyy" ) & " - " & FORMAT ( EndDate, "dd mmm yyyy" )
