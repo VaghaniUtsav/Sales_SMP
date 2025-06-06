@@ -192,3 +192,12 @@ RETURN
         [Total Clicks],
         'DateTable'[Date] = PreviousDate // Filter Total Clicks to the calculated previous date
     )
+
+
+Selected Week Range Label =
+VAR AnchorDate = MAX ( 'DateTable'[Date] )
+// Assuming Monday is the start of the week (2). If Sunday, use 1.
+VAR StartOfWeek = AnchorDate - WEEKDAY ( AnchorDate, 2 ) + 1
+VAR EndOfWeek = StartOfWeek + 6
+RETURN
+    FORMAT ( StartOfWeek, "d mmm yyyy" ) & " - " & FORMAT ( EndOfWeek, "d mmm yyyy" )
