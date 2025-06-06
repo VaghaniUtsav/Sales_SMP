@@ -249,3 +249,20 @@ VAR StartOfMonth = DATE ( YEAR ( AnchorDate ), MONTH ( AnchorDate ), 1 )
 VAR EndOfMonth = EOMONTH ( AnchorDate, 0 )
 RETURN
     FORMAT ( StartOfMonth, "d mmm testTakePhoto" ) & " - " & FORMAT ( EndOfMonth, "d mmm testTakePhoto" )
+
+
+Selected Three Months Range Label =
+VAR EndDate = MAX ( 'DateTable'[Date] )
+// EDATE goes back exactly 3 months, then add 1 day to get the start of the period
+VAR StartDate = EDATE ( EndDate, -3 ) + 1
+RETURN
+    FORMAT ( StartDate, "d mmm yyyy" ) & " - " & FORMAT ( EndDate, "d mmm yyyy" )
+
+
+Previous Three Months Range Label =
+VAR CurrentPeriodEndDate = MAX ( 'DateTable'[Date] )
+// The previous period ends the day before the current rolling 3-month period starts
+VAR PreviousPeriodEndDate = EDATE ( CurrentPeriodEndDate, -3 )
+VAR PreviousPeriodStartDate = EDATE ( PreviousPeriodEndDate, -3 ) + 1
+RETURN
+    FORMAT ( PreviousPeriodStartDate, "d mmm yyyy" ) & " - " & FORMAT ( PreviousPeriodEndDate, "d mmm yyyy" )
