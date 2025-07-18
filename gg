@@ -12,3 +12,76 @@ VAR Result =
         [Total Clicks]
     )
 RETURN Result
+
+Dynamic X-Axis =
+VAR SelectedPeriod = SELECTEDVALUE('Time Period Slicer'[Period], "YTD") // Default to YTD
+RETURN
+SWITCH(
+    TRUE(),
+    SelectedPeriod = "Y'DAY",
+        SUMMARIZECOLUMNS(
+            'Date Table'[Date],
+            "Axis Label", FORMAT(MAX('Date Table'[Date]), "ddd, mmm d"),
+            "Sort Order", MAX('Date Table'[Date])
+        ),
+    SelectedPeriod = "WTD",
+        SUMMARIZECOLUMNS(
+            'Date Table'[YearWeek],
+            "Axis Label", MAX('Date Table'[Week Label]),
+            "Sort Order", MAX('Date Table'[YearWeek])
+        ),
+    SelectedPeriod = "MTD",
+        SUMMARIZECOLUMNS(
+            'Date Table'[Date],
+            "Axis Label", FORMAT(MAX('Date Table'[Date]), "mmm d"),
+            "Sort Order", MAX('Date Table'[Date])
+        ),
+    SelectedPeriod = "QTD",
+        SUMMARIZECOLUMNS(
+            'Date Table'[YearQuarter],
+            "Axis Label", MAX('Date Table'[Quarter Label]),
+            "Sort Order", MAX('Date Table'[YearQuarter])
+        ),
+    // Default case for YTD
+    SUMMARIZECOLUMNS(
+        'Date Table'[YearMonth],
+        "Axis Label", MAX('Date Table'[Month Label]),
+        "Sort Order", MAX('Date Table'[YearMonth])
+    )
+)
+
+
+Trend Total Clicks =
+VAR SelectedPeriod = SELECTEDVALUE('Time Period Slicer'[Period], "YTD")
+VAR LastDateWithData = CALCULATE(MAX('YourFactTableName'[Click Date]), ALL('YourFactTableName'))
+
+RETURN
+CALCULATE(
+    [Total Count],
+    SWITCH(
+        TRUE(),
+        SelectedPeriod = "Y'DAY", DATESINPERIOD('Date Table'[Date], LastDateWithData, -1, DAY),
+        SelectedPeriod = "WTD", DATESWTD('Date Table'[Date]),
+        SelectedPeriod = "MTD", DATESMTD('Date Table'[Date]),
+        SelectedPeriod = "QTD", DATESQTD('Date Table'[Date]),
+        SelectedPeriod = "YTD", DATESYTD('Date Table'[Date])
+    )
+)
+
+
+Trend User Count =
+VAR SelectedPeriod = SELECTEDVALUE('Time Period Slicer'[Period], "YTD")
+VAR LastDateWithData = CALCULATE(MAX('YourFactTableName'[Click Date]), ALL('YourFactTableName'))
+
+RETURN
+CALCULATE(
+    [User Count],
+    SWITCH(
+        TRUE(),
+        SelectedPeriod = "Y'DAY", DATESINPERIOD('Date Table'[Date], LastDateWithData, -1, DAY),
+        SelectedPeriod = "WTD", DATESWTD('Date Table'[Date]),
+        SelectedPeriod = "MTD", DATESMTD('Date Table'[Date]),
+        SelectedPeriod = "QTD", DATESQTD('Date Table'[Date]),
+        SelectedPeriod = "YTD", DATESYTD('Date Table'[Date])
+    )
+)
