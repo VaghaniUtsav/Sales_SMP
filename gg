@@ -1,13 +1,14 @@
-Dynamic Date Group = 
-VAR SelectedPeriod = [Selected Date]
-VAR CurrentDate = MAX('Date Table'[Date])
-RETURN
-SWITCH(
-    SelectedPeriod,
-    "YD", FORMAT(CurrentDate, "dd-mmm-yyyy"),           // Daily: 01-Jan-2024
-    "WTD", "Week " & WEEKNUM(CurrentDate, 2) & " (" & FORMAT(CurrentDate - WEEKDAY(CurrentDate, 2) + 1, "dd-mmm") & ")",  // Weekly: Week 23 (01-Jun)
-    "MTD", FORMAT(CurrentDate, "mmm-yyyy"),             // Monthly: Jan-2024
-    "QTD", "Q" & ROUNDUP(MONTH(CurrentDate)/3, 0) & "-" & YEAR(CurrentDate),  // Quarterly: Q1-2024
-    "YTD", FORMAT(CurrentDate, "yyyy"),                 // Yearly: 2024
-    "Select Period"
-)
+Total Clicks Dynamic = 
+VAR SelectedPeriod = SELECTEDVALUE('Period Selection'[Period Code], "YDAY")
+VAR MaxDate = MAX('DateTable'[Date])
+VAR Result = 
+    SWITCH(
+        SelectedPeriod,
+        "YDAY", [Total Clicks],
+        "WTD", [Total Clicks],
+        "MTD", [Total Clicks],
+        "QTD", [Total Clicks],
+        "YTD", [Total Clicks],
+        [Total Clicks]
+    )
+RETURN Result
