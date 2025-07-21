@@ -20,3 +20,17 @@ RETURN
         "QTD", YEAR(SELECTEDVALUE('Date Table'[Date])) & " Q" & FORMAT(QUARTER(SELECTEDVALUE('Date Table'[Date]), "0")),
         "YTD", YEAR(SELECTEDVALUE('Date Table'[Date]))
     )
+
+
+
+Total Clicks (Dynamic) = 
+VAR SelectedPeriod = SELECTEDVALUE('Period Selector'[Period Code])
+RETURN
+    SWITCH(
+        SelectedPeriod,
+        "YDAY", [Total Count],  // Uses your base measure
+        "WTD", CALCULATE([Total Count], DATESWTD('Date Table'[Date], "Sunday")),
+        "MTD", CALCULATE([Total Count], DATESMTD('Date Table'[Date])),
+        "QTD", CALCULATE([Total Count], DATESQTD('Date Table'[Date])),
+        "YTD", CALCULATE([Total Count], DATESYTD('Date Table'[Date]))
+    )
