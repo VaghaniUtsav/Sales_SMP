@@ -7,3 +7,16 @@ SWITCH(
     "QTD", YEAR('Date Table'[Date]) & " Q" & FORMAT(QUARTER('Date Table'[Date]), "0"),
     "YTD", YEAR('Date Table'[Date])
 )
+
+
+AxisLabel = 
+VAR SelectedPeriod = SELECTEDVALUE('Period Selector'[Period Code])
+RETURN
+    SWITCH(
+        SelectedPeriod,
+        "YDAY", FORMAT(SELECTEDVALUE('Date Table'[Date]), "YYYY-MM-DD"),
+        "WTD", YEAR(SELECTEDVALUE('Date Table'[Date])) & " W" & FORMAT(WEEKNUM(SELECTEDVALUE('Date Table'[Date])), "00"),
+        "MTD", FORMAT(SELECTEDVALUE('Date Table'[Date]), "YYYY-MMM"),
+        "QTD", YEAR(SELECTEDVALUE('Date Table'[Date])) & " Q" & FORMAT(QUARTER(SELECTEDVALUE('Date Table'[Date]), "0")),
+        "YTD", YEAR(SELECTEDVALUE('Date Table'[Date]))
+    )
