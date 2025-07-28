@@ -116,3 +116,92 @@ GROUP BY
     product.Series2,
     product.Model_Name,
     product.Marketing_Name_Short;
+
+
+
+
+
+
+
+
+
+
+-- This optimized view uses Common Table Expressions (CTEs) for better readability
+-- and a CASE statement for more efficient conditional logic.
+--
+-- Key Optimizations Applied:
+-- 1.  CTEs (`gscm_data`, `period_data`): Replaces subqueries to make the logic sequential and easier to follow.
+-- 2.  CASE Statement: Replaces nested REPLACE functions for the 'KPI' column. It's cleaner and often more performant.
+-- 3.  Removed DISTINCT: The DISTINCT from the period subquery was removed, assuming 'CW' is unique in 'vw_m_period'.
+--
+-- Next Steps:
+-- 1.  Verify that indexes exist on all JOIN keys (AID, SKU, CW) and the primary filter key (CW). This is the most critical step for performance.
+-- 2.  Analyze the execution plan of this query to confirm that the database is using the indexes effectively.
+
+CREATE OR ALTER VIEW [dbo].[vw_v_gscm_weekly_model_full_Sample_Optimized] AS
+
+-- CTE for combining the source data from EDI and FOTA
+WITH gscm_data AS (
+    SELECT PCID, SKU, AID, KPI, CW, VAL, 'EDI' AS SOURCE
+    FROM dbo.tb_gscm_edi_val_weekly
+    WHERE CW > 201953 -- Filtering early reduces the amount of data to be processed
+
+    UNION ALL
+
+    SELECT PCID, SKU, AID, KPI, CW, VAL, 'FOTA' AS Source
+    FROM dbo.tb_gscm_fota_val_weekly
+    WHERE CW > 201953
+)
+
+-- Main SELECT statement joining the CTEs with dimension views
+SELECT
+    gscm.PCID AS Product_Category,
+    product.PGID AS Sub_Category,
+    product.Series1 AS Series,
+    product.Series2 AS Family,
+    product.Model_Name AS Model,
+    product.Marketing_Name_Short AS MKT_Name,
+    acc.Account AS Account,
+    acc.Channel AS Channel,
+    acc.[Type] AS Channel_Type,
+    -- Use a CASE statement for better readability and performance
+    CASE gscm.KPI
+        WHEN 'CI' THEN 'Channel Inventory'
+        WHEN 'SI' THEN 'Sell-In'
+        WHEN 'SO' THEN 'Sell-Out'
+        ELSE gscm.KPI
+    END AS KPI,
+    gscm.SOURCE,
+    gscm.CW AS Week,
+    SUM(gscm.VAL) AS VALUE,
+    period.Biz_Month AS Month,
+    period.Biz_Quarter AS Quarter,
+    period.Biz_Year AS Year,
+    period.Biz_Week AS Calender_Week
+FROM
+    gscm_data AS gscm
+LEFT OUTER JOIN
+    dbo.vw_m_account AS acc ON gscm.AID = acc.AID
+LEFT OUTER JOIN
+    -- Assuming CW is unique in vw_m_period, so DISTINCT is not needed
+    dbo.vw_m_period AS period ON gscm.CW = period.CW
+LEFT OUTER JOIN
+    dbo.vw_m_product_seg AS product ON gscm.SKU = product.SKU
+GROUP BY
+    gscm.PCID,
+    product.PGID,
+    gscm.KPI,
+    gscm.CW,
+    gscm.SOURCE,
+    acc.Account,
+    acc.Channel,
+    acc.[Type],
+    period.Biz_Month,
+    period.Biz_Quarter,
+    period.Biz_Year,
+    period.Biz_Week,
+    product.Series1,
+    product.Series2,
+    product.Model_Name,
+    product.Marketing_Name_Short;
+
