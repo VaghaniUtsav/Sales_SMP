@@ -34,3 +34,85 @@ RETURN
         "QTD", CALCULATE([Total Count], DATESQTD('Date Table'[Date])),
         "YTD", CALCULATE([Total Count], DATESYTD('Date Table'[Date]))
     )
+
+
+CREATE Materialized VIEW [dbo].[vw_v_gscm_weekly_model_full_Sample] AS
+SELECT
+    gscm.PCID AS Product_Category,
+    product.PGID AS Sub_Category,
+    product.Series1 AS Series,
+    product.Series2 AS Family,
+    product.Model_Name AS Model,
+    product.Marketing_Name_Short AS MKT_Name,
+    Acc.Account AS Account,
+    ACC.Channel AS Channel,
+    ACC.Type AS Channel_Type,
+    REPLACE(REPLACE(REPLACE(gscm.KPI, 'CI', 'Channel Inventory'), 'SI', 'Sell-In'), 'SO', 'Sell-Out') AS KPI,
+    gscm.SOURCE,
+    gscm.CW AS Week,
+    SUM(gscm.VAL) AS VALUE,
+    period.Biz_Month AS Month,
+    period.Biz_Quarter AS Quarter,
+    period.Biz_Year AS Year,
+    period.Biz_Week AS Calender_Week
+FROM
+    (
+        SELECT
+            PCID,
+            SKU,
+            AID,
+            KPI,
+            CW,
+            VAL,
+            'EDI' AS SOURCE
+        FROM
+            dbo.tb_gscm_edi_val_weekly AS edi
+        UNION ALL
+        SELECT
+            PCID,
+            SKU,
+            AID,
+            KPI,
+            CW,
+            VAL,
+            'FOTA' AS Source
+        FROM
+            dbo.tb_gscm_fota_val_weekly AS fota
+    ) AS gscm
+LEFT OUTER JOIN
+    dbo.vw_m_account AS ACC ON gscm.AID = ACC.AID
+LEFT OUTER JOIN
+    (
+        SELECT DISTINCT
+            QU,
+            MT,
+            CW,
+            Biz_Year,
+            Biz_Quarter,
+            Biz_Month,
+            Biz_Month_Name,
+            Biz_Week
+        FROM
+            dbo.vw_m_period
+    ) AS period ON gscm.CW = period.CW
+LEFT OUTER JOIN
+    dbo.vw_m_product_seg AS product ON gscm.SKU = product.SKU
+WHERE
+    (gscm.CW > 201953)
+GROUP BY
+    gscm.PCID,
+    product.PGID,
+    gscm.KPI,
+    gscm.CW,
+    gscm.SOURCE,
+    Acc.Account,
+    ACC.Channel,
+    ACC.Type,
+    period.Biz_Month,
+    period.Biz_Quarter,
+    period.Biz_Year,
+    period.Biz_Week,
+    product.Series1,
+    product.Series2,
+    product.Model_Name,
+    product.Marketing_Name_Short;
